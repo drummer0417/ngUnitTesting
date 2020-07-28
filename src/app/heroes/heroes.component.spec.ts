@@ -1,6 +1,7 @@
 import { Hero } from "../hero";
 import { HeroesComponent } from "./heroes.component";
-import { of } from "rxjs";
+import { of, Subject, Observable } from "rxjs";
+import { HeroComponent } from "../hero/hero.component";
 
 describe('HeroesComponent', () => {
 
@@ -12,7 +13,7 @@ describe('HeroesComponent', () => {
         HEROES = [
             { id: 1, name: 'pietje', strength: 25 },
             { id: 2, name: 'jantje', strength: 75 },
-            { id: 3, name: 'klaasje', strength: 10 }   
+            { id: 3, name: 'klaasje', strength: 10 }
         ]
         mockHeroService = jasmine.createSpyObj(['addHero', 'getHeroes', 'deleteHero'])
 
@@ -32,5 +33,36 @@ describe('HeroesComponent', () => {
         expect(heroesComponent.heroes.length).toBe(2);
         expect(heroesComponent.heroes[0].id).toBe(1);
         expect(heroesComponent.heroes[1].id).toBe(2);
+        expect(heroesComponent.heroes[2]).toBeUndefined();
     })
+
+    it('shouild call heroService.deleteHero with correct hero', () => {
+        // Arrange
+        heroesComponent.heroes = HEROES;
+        mockHeroService.deleteHero.and.returnValue(of(true));
+        
+        // Act
+        heroesComponent.delete(HEROES[1]);
+        
+        // Assert
+        // check that delleteHero was called
+        expect(mockHeroService.deleteHero).toHaveBeenCalled();
+        // or even better... check that delleteHero was called with the correct parameter
+        expect(mockHeroService.deleteHero).toHaveBeenCalledWith(HEROES[1]);
+    })
+    
+    it('shouild call heroService.deleteHero returns an observable', () => {
+        // Arrange
+        heroesComponent.heroes = HEROES;
+        mockHeroService.deleteHero.and.returnValue(of(true));
+        
+        // Act
+        let result: any = mockHeroService.deleteHero(HEROES[1]);
+        
+        // Assert
+        // check that delleteHero was called
+        expect(result instanceof Observable).toBeTruthy();
+        expect(result instanceof Observable).toBeTruthy();
+    })
+    
 })
