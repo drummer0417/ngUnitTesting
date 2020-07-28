@@ -1,2 +1,0 @@
-[0727/211215.366:ERROR:process_memory_win.cc(73)] ReadMemory at 0x1a495e573f0 of 72 bytes failed: Een ReadProcessMemory- of WriteProcessMemory-opdracht is slechts gedeeltelijk uitgevoerd. (0x12B)
-[0727/211215.367:WARNING:pe_image_annotations_reader.cc(134)] could not read annotations list object in C:\Program Files (x86)\Google\Chrome\Application\84.0.4147.89\chrome.dll
