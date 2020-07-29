@@ -3,7 +3,7 @@ import { HeroesComponent } from "./heroes.component";
 import { of, Subject, Observable } from "rxjs";
 import { HeroComponent } from "../hero/hero.component";
 
-describe('HeroesComponent', () => {
+describe('HeroesComponent (Isolated tests)', () => {
 
     let heroesComponent: HeroesComponent;
     let HEROES;
@@ -47,6 +47,7 @@ describe('HeroesComponent', () => {
         // Assert
         // check that delleteHero was called
         expect(mockHeroService.deleteHero).toHaveBeenCalled();
+        // expect(mockHeroService.deleteHero).
         // or even better... check that delleteHero was called with the correct parameter
         expect(mockHeroService.deleteHero).toHaveBeenCalledWith(HEROES[1]);
     })
@@ -62,7 +63,5 @@ describe('HeroesComponent', () => {
         // Assert
         // check that delleteHero was called
         expect(result instanceof Observable).toBeTruthy();
-        expect(result instanceof Observable).toBeTruthy();
     })
-    
 })
