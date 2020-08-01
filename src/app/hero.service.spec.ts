@@ -34,10 +34,31 @@ describe('HeroService', () => {
 
         //expect exactly one call is done to the given url
         const request = httpTestingController.expectOne('api/heroes/4');
+        // check if it a GET request
+        expect(request.request.method).toBe("GET");
+       
         request.flush({id: 4, name: "Pietje", stregth: 44});
 
         // verify we get exactly what we expect => just one request with correct url
         httpTestingController.verify();
-        // req.flush({ id: 4, name: 'SuperDude', strength: 100 });
+    })
+
+    it('should postHero with correct url and postBody:', () => {
+
+        let postBody = "{id: 2}";
+        // mockMessageService.add.and.returnValue();
+        heroService.postHero(postBody).subscribe();
+        // heroService.getHero(5).subscribe();
+
+        //expect exactly one call is done to the given url
+        const request = httpTestingController.expectOne('api/heroes');
+        // check Post method with body use: 
+        expect(request.request.method).toBe("POST");
+        expect(request.request.body).toBe("{id: 2}");
+       
+        request.flush({id: 4, name: "Pietje", stregth: 44});
+
+        // verify we get exactly what we expect => just one request with correct url
+        httpTestingController.verify();
     })
 });
