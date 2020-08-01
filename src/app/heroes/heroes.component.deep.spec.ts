@@ -48,7 +48,7 @@ describe('HeroesComponent (Deep)', () => {
 
         for (let i = 0; i < heroComponentDebugElement.length; i++) {
             const element = heroComponentDebugElement[i];
-            
+
             expect(element.nativeElement.textContent).toContain(HEROES[i].name);
             expect(element.query(By.css('a')).nativeElement.textContent).toContain(HEROES[i].name);
         }
@@ -66,5 +66,20 @@ describe('HeroesComponent (Deep)', () => {
         for (let i = 0; i < heroComponentDebugElement.length; i++) {
             expect(heroComponentDebugElement[i].componentInstance.hero).toEqual(HEROES[i]);
         }
+    })
+
+    it(`should call the delete method with the right hero,
+     when the delete button of child HeroComponent was clicked`, () => {
+
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        spyOn(fixture.componentInstance, 'delete');
+        
+        fixture.detectChanges();
+
+        const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
+        const button = heroComponents[0].query(By.css('button'));
+        button.triggerEventHandler('click', { stopPropagation: () => {} })
+
+        expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
     })
 });
