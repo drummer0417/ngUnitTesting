@@ -36,7 +36,7 @@ describe('HeroesComponent (Isolated tests)', () => {
         expect(heroesComponent.heroes[2]).toBeUndefined();
     })
 
-    it('shouild call heroService.deleteHero with correct hero', () => {
+    it('should call heroService.deleteHero with correct hero', () => {
         // Arrange
         heroesComponent.heroes = HEROES;
         mockHeroService.deleteHero.and.returnValue(of(true));
