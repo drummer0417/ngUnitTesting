@@ -1,13 +1,26 @@
 import { HeroesComponent } from "./heroes.component";
 import { TestBed, ComponentFixture } from "@angular/core/testing";
-import { NO_ERRORS_SCHEMA, Input, Output, Component, DebugElement } from "@angular/core";
+import { Input, Directive } from "@angular/core";
 import { HeroService } from "../hero.service";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { HeroComponent } from "../hero/hero.component";
-import { HttpClientBackendService } from "angular-in-memory-web-api";
+import { Hero } from "../hero";
 
 describe('HeroesComponent (Deep)', () => {
+
+    @Directive({
+        selector: "[routerLink]",
+        host: { "(click)": "onClick()" }
+    })
+    class RouterLinkDirectiveStub {
+        @Input('routerLink') linkParams: any;
+        navigatedTo: any = null;
+
+        onClick() {
+            this.navigatedTo = this.linkParams;
+        }
+    }
 
     let fixture: ComponentFixture<HeroesComponent>;
     let heroesComponent;
@@ -15,23 +28,23 @@ describe('HeroesComponent (Deep)', () => {
     let HEROES;
 
     beforeEach(() => {
+        mockHeroService = jasmine.createSpyObj(['getHeroes', 'addHero', 'deleteHero']);
+
         HEROES = [
             { id: 1, name: 'pietje', strength: 25 },
             { id: 2, name: 'jantje', strength: 75 },
             { id: 3, name: 'klaasje', strength: 10 }
         ]
-
-        mockHeroService = jasmine.createSpyObj(['getHeroes', 'addHero', 'deleteHero']);
-
         TestBed.configureTestingModule({
             declarations: [
                 HeroesComponent,
-                HeroComponent
+                HeroComponent,
+                RouterLinkDirectiveStub
             ],
             providers: [
+                RouterLinkDirectiveStub,
                 { provide: HeroService, useValue: mockHeroService }
-            ],
-            schemas: [NO_ERRORS_SCHEMA]
+            ]
         })
         fixture = TestBed.createComponent(HeroesComponent);
     })
@@ -115,7 +128,7 @@ describe('HeroesComponent (Deep)', () => {
     it(`should add a new hero, with the inputted name to the heroes list 
         when add button is clicked` , () => {
 
-        const heroName = "Mr. Hans"; 
+        const heroName = "Mr. Hans";
         mockHeroService.getHeroes.and.returnValue(of(HEROES));
         fixture.detectChanges();
         mockHeroService.addHero.and.returnValue(of({ id: 5, name: heroName, strength: 33 }));
@@ -129,5 +142,21 @@ describe('HeroesComponent (Deep)', () => {
         // expect(fixture.debugElement.nativeElement.textContent).toContain("Mr. Hans");
         const listElement4 = fixture.debugElement.queryAll(By.css('li'))[3].nativeElement;
         expect(listElement4.textContent).toContain("5 Mr. Hans");
+    })
+
+   it('should have the correct route for the first hero', () => {
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        fixture.detectChanges();
+        const firstHero = fixture.debugElement.queryAll(By.directive(HeroComponent))[0];
+        const debugElementA = firstHero.query(By.css('a'));
+
+        debugElementA.triggerEventHandler('click', null);
+        fixture.detectChanges();
+
+        const routerLink = firstHero
+             .query(By.directive(RouterLinkDirectiveStub))
+             .injector.get(RouterLinkDirectiveStub);
+
+        expect(routerLink.navigatedTo).toBe("/detail/1");
     })
 });
