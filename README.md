@@ -1,7 +1,1 @@
-# Pluralsight's Unit Testing in Angular Course
-This course is up to date.
-
-To get started, clone the repo or download it
-
-npm install
-npm test
+This is my elaboration of the labs of the course "Unit testing in Angular" by Joe Eames.
